@@ -1,0 +1,11 @@
+{
+  "name": "surf-tracker-api",
+  "version": "1.0.0",
+  "description": "Just a basic way of adding surf tracking data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Johan Jarvi",
+  "license": "ISC"
+}
