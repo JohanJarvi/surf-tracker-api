@@ -11,13 +11,13 @@ app.get("/", (req, res) => {
   const auth = req.headers["authorization"];
   const matches = auth === process.env.USER_AUTH;
 
-  console.log("Performing healthcheck");
+  console.log("\nPerforming healthcheck");
 
   if (matches) {
     res.json({
       message: "Working correctly",
     });
-    console.log("Health check finished");
+    console.log("Health check finished\n");
   } else {
     res.status(401);
     res.json({ message: "Forbidden" });
@@ -31,7 +31,7 @@ app.post("/insert", async (req, res) => {
   const auth = req.headers["authorization"];
   const matches = auth === process.env.USER_AUTH;
 
-  console.log("Inserting new surf day");
+  console.log("\nInserting new surf day");
 
   if (matches) {
     try {
@@ -40,7 +40,9 @@ app.post("/insert", async (req, res) => {
       console.log("Inserting record");
       await client.db("surfdays").collection("days").insertOne(req.body);
       res.json({ message: "Inserted record", data: req.body });
-      console.log(`Successfully inserted record '${JSON.stringify(req.body)}'`);
+      console.log(
+        `Successfully inserted record '${JSON.stringify(req.body)}'\n`
+      );
     } catch (err) {
       console.error(err);
     } finally {
@@ -56,16 +58,22 @@ app.post("/delete", async (req, res) => {
   const auth = req.headers["authorization"];
   const matches = auth === process.env.USER_AUTH;
 
-  console.log(`Deleting surf day ${JSON.stringify(req.body)}`);
+  console.log(
+    `\nDeleting surf day(s) matching filter: '${JSON.stringify(req.body)}'`
+  );
 
   if (matches) {
     try {
       console.log("Connecting to db");
       await client.connect();
-      console.log("Deleting record");
+      console.log("Deleting record(s)");
       await client.db("surfdays").collection("days").deleteMany(req.body);
       res.json({ message: "Deleted record", data: req.body });
-      console.log(`Successfully deleted record '${JSON.stringify(req.body)}'`);
+      console.log(
+        `Successfully deleted record(s) with filter: '${JSON.stringify(
+          req.body
+        )}'\n`
+      );
     } catch (err) {
       console.error(err);
     } finally {
