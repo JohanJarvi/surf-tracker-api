@@ -27,21 +27,26 @@ app.get("/", (req, res) => {
 
 const client = new MongoClient(process.env.MONGODB_URI);
 
-app.post("/insert", async (req, res) => {
+app.post("/upsert", async (req, res) => {
   const auth = req.headers["authorization"];
   const matches = auth === process.env.USER_AUTH;
 
-  console.log("\nInserting new surf day");
+  console.log(`\nUpserting surf day matching filter: '${req.body.date}'`);
 
   if (matches) {
     try {
       console.log("Connecting to db");
       await client.connect();
-      console.log("Inserting record");
-      await client.db("surfdays").collection("days").insertOne(req.body);
-      res.json({ message: "Inserted record", data: req.body });
+      console.log("Upserting record");
+      await client
+        .db("surfdays")
+        .collection("days")
+        .findOneAndReplace({ date: req.body.date.toString() }, req.body, {
+          upsert: true,
+        });
+      res.json({ message: "Upserted record", data: req.body });
       console.log(
-        `Successfully inserted record '${JSON.stringify(req.body)}'\n`
+        `Successfully upserted record '${JSON.stringify(req.body)}'\n`
       );
     } catch (err) {
       console.error(err);
